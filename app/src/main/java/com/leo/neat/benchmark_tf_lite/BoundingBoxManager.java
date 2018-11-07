@@ -41,6 +41,21 @@ public class BoundingBoxManager {
     private Semaphore mListLock;
 
     /**
+     * The number of inferences done every second
+     */
+    private double mIPS;
+
+    /**
+     * The color to make the ips
+     */
+    private Paint mTextPaint;
+
+    /**
+     * The size of text to make the IPS
+     */
+    private static final int TEXT_SIZE = 50;
+
+    /**
      * Constructor
      * @param sv - the surface view on which the bounding boxes are placed
      */
@@ -53,6 +68,11 @@ public class BoundingBoxManager {
         mSurfaceHolder = mBaseSurface.getHolder();
         mBoundingBoxList = new ArrayList<>();
         mListLock = new Semaphore(1);
+        mIPS = 0;
+        mTextPaint = new Paint();
+        mTextPaint.setTextSize(TEXT_SIZE);
+        mTextPaint.setColor(Color.GREEN);
+        mTextPaint.setStyle(Paint.Style.FILL);
     }
 
     public void addBoundingBox(RectF box, int c, int duration, String label){
@@ -91,6 +111,7 @@ public class BoundingBoxManager {
         updateBoxList();
         Canvas c = mSurfaceHolder.lockCanvas();
         c.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        c.drawText("IPS: " + mIPS,0,TEXT_SIZE,mTextPaint);
         try {
             mListLock.acquire();
         } catch (InterruptedException e) {
@@ -104,5 +125,10 @@ public class BoundingBoxManager {
         }
         mListLock.release();
         mSurfaceHolder.unlockCanvasAndPost(c);
+    }
+
+    public void setIPS(double ips)
+    {
+        mIPS = ips;
     }
 }

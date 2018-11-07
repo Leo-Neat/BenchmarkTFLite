@@ -20,8 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
         // XML linking
         Button startBtn = findViewById(R.id.start_btn);
-        Button settingsBtn = findViewById(R.id.settings_btn);
-        Button resultsBtn = findViewById(R.id.results_btn);
+        Button modelsBtn = findViewById(R.id.models_btn);
 
         // On button press
         startBtn.setOnClickListener(new View.OnClickListener() {
@@ -32,15 +31,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        settingsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Button not implemented yet....",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        resultsBtn.setOnClickListener(new View.OnClickListener() {
+        modelsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Button not implemented yet....",

@@ -39,7 +39,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.WindowManager;
+import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -555,6 +557,35 @@ public class InferenceTestActivity extends AppCompatActivity {
         return (WindowManager) getBaseContext().getSystemService(Context.WINDOW_SERVICE);
     }
 
+    enum DetectorMode {
+        TF_OD_API;
+    }
+
+    private Classifier createClassifier()
+    {
+        Classifier detector = null;
+        final int TF_OD_API_INPUT_SIZE = 300;
+        boolean TF_OD_API_IS_QUANTIZED = true;
+        String TF_OD_API_MODEL_FILE = "detect.tflite";
+        String TF_OD_API_LABELS_FILE = "file:///android_asset/coco_labels_list.txt";
+        try {
+            detector =
+                    TFLiteObjectDetectionAPIModel.create(
+                            getAssets(),
+                            TF_OD_API_MODEL_FILE,
+                            TF_OD_API_LABELS_FILE,
+                            TF_OD_API_INPUT_SIZE,
+                            TF_OD_API_IS_QUANTIZED);
+        } catch (final IOException e) {
+            Toast toast =
+                    Toast.makeText(
+                            getApplicationContext(), "Classifier could not be initialized", Toast.LENGTH_SHORT);
+            toast.show();
+            finish();
+        }
+        return detector;
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -562,9 +593,10 @@ public class InferenceTestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inference_test);
         mTextureView = findViewById(R.id.camera_display);
         SurfaceView mSurface = findViewById(R.id.bounding_box_surface);
-        mDetector = new Detector(mSurface, getApplicationContext());
+        mDetector = new Detector(mSurface, getApplicationContext(), createClassifier());
     }
 }
+
 
 /**
  * Compares two {@code Size}s based on their areas.
