@@ -27,7 +27,7 @@ public class Detector implements ImageReader.OnImageAvailableListener {
         counter += 1;
         if(counter %100 == 1)
         {
-            mBoundingBoxManager.addBoundingBox(new RectF(.5f,.5f,.8f,.8f),
+            mBoundingBoxManager.addBoundingBox(new RectF(.0f,.0f,.3f,.5f),
                     Color.GREEN, 2000, "No Label");
         }
     }

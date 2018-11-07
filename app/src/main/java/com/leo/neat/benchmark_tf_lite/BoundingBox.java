@@ -22,6 +22,11 @@ class BoundingBox {
     private static int STROKE_WIDTH = 5;
 
     /**
+     * The text size of the labels to be drawn
+     */
+    private static int TEXT_SIZE = 50;
+
+    /**
      * Rectangle that is the underlying size of the box in percentages
      * (top left x %, top left y%, bottom right x %, bottom right y %)
      */
@@ -47,6 +52,10 @@ class BoundingBox {
      */
     private long mStartTime;
 
+    /**
+     * The paint that will be used for drawing text on the screen
+     */
+    private Paint mTextPaint;
 
     /**
      * The amount of time in ms that the box is to be shown
@@ -61,6 +70,10 @@ class BoundingBox {
      */
     public BoundingBox(RectF box, int color, String label, long duration)
     {
+        mTextPaint = new Paint();
+        mTextPaint.setTextSize(TEXT_SIZE);
+        mTextPaint.setColor(Color.RED);
+        mTextPaint.setStyle(Paint.Style.FILL);
         mBoxRect = box;
         mBoxLabel = label;
         mLifespan = duration;
@@ -86,6 +99,7 @@ class BoundingBox {
         int bottomrightx = (int)(canvasWidth * mBoxRect.right);
         int bottomrighty = (int)(canvasHeight * mBoxRect.bottom);
         c.drawRect(new Rect(topleftx, toplefty,bottomrightx,bottomrighty ), mBoxPaint);
+        c.drawText(mBoxLabel,topleftx,toplefty + TEXT_SIZE, mTextPaint);
     }
 
     @Override
