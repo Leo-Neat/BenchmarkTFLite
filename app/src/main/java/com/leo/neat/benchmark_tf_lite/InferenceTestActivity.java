@@ -6,9 +6,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -30,6 +35,8 @@ import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.WindowManager;
 
@@ -47,6 +54,8 @@ public class InferenceTestActivity extends AppCompatActivity {
      * Conversion from screen rotation to JPEG orientation.
      */
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+
+    private Detector mDetector;
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -133,6 +142,11 @@ public class InferenceTestActivity extends AppCompatActivity {
 
 
     /**
+     * Surface to display bounding boxes
+     */
+    SurfaceView mBoundingDisplaySurface;
+
+    /**
      * An {@link AutoFitTextureView} for camera preview.
      */
     private AutoFitTextureView mTextureView;
@@ -173,19 +187,6 @@ public class InferenceTestActivity extends AppCompatActivity {
 
         private void process(CaptureResult result) {
 
-        }
-    };
-
-        /**
-     * This a callback object for the {@link ImageReader}. "onImageAvailable" will be called when a
-     * still image is ready to be saved.
-     */
-    private final ImageReader.OnImageAvailableListener mOnImageAvailableListener
-            = new ImageReader.OnImageAvailableListener() {
-
-        @Override
-        public void onImageAvailable(ImageReader reader) {
-            Log.i(TAG, "Image has been aquired by the camera");
         }
     };
 
@@ -314,7 +315,7 @@ public class InferenceTestActivity extends AppCompatActivity {
                 mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
                         ImageFormat.JPEG, /*maxImages*/2);
                 mImageReader.setOnImageAvailableListener(
-                        mOnImageAvailableListener, mBackgroundHandler);
+                        mDetector, mBackgroundHandler);
 
                 // Find out if we need to swap dimension to get the preview size relative to sensor
                 // coordinate.
@@ -476,7 +477,7 @@ public class InferenceTestActivity extends AppCompatActivity {
             mPreviewRequestBuilder
                     = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mPreviewRequestBuilder.addTarget(surface);
-
+            mPreviewRequestBuilder.addTarget(mImageReader.getSurface());
             // Here, we create a CameraCaptureSession for camera preview.
             mCameraDevice.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
                     new CameraCaptureSession.StateCallback() {
@@ -560,7 +561,8 @@ public class InferenceTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inference_test);
         mTextureView = findViewById(R.id.camera_display);
-
+        SurfaceView mSurface = findViewById(R.id.bounding_box_surface);
+        mDetector = new Detector(mSurface, getApplicationContext());
     }
 }
 

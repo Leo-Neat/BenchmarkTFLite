@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".InferenceTestActivity">
 
+
+
     <com.leo.neat.benchmark_tf_lite.AutoFitTextureView
         android:id="@+id/camera_display"
         android:layout_width="match_parent"
@@ -20,5 +22,10 @@
             android:textSize="@dimen/button_text_size"
             android:text="Inference Test"/>
     </LinearLayout>
+
+    <SurfaceView
+        android:id="@+id/bounding_box_surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </android.support.constraint.ConstraintLayout>
