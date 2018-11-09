@@ -34,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
         modelsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Button not implemented yet....",
-                        Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), ModelsActivity.class);
+                startActivity(intent);
             }
         });
 

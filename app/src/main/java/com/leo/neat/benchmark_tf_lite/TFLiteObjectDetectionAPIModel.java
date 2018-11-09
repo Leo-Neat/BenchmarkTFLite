@@ -145,8 +145,10 @@ public class TFLiteObjectDetectionAPIModel implements Classifier {
 
     private TFLiteObjectDetectionAPIModel() {}
 
+
     @Override
     public List<Recognition> recognizeImage(final Bitmap bitmap) {
+        Log.e("ATTEMPTING", "TO RECOGNIZE IMAGE");
         // Log this method so that it can be analyzed with systrace.
         Trace.beginSection("recognizeImage");
 
@@ -192,11 +194,13 @@ public class TFLiteObjectDetectionAPIModel implements Classifier {
         Trace.beginSection("run");
         tfLite.runForMultipleInputsOutputs(inputArray, outputMap);
         Trace.endSection();
-
+        ;
         // Show the best detections.
         // after scaling them back to the input size.
         final ArrayList<Recognition> recognitions = new ArrayList<>(NUM_DETECTIONS);
+
         for (int i = 0; i < NUM_DETECTIONS; ++i) {
+            Log.d("OUTPUT Scores", outputScores[0][i] + " ");
             final RectF detection =
                     new RectF(
                             outputLocations[0][i][1] * inputSize,
@@ -212,7 +216,7 @@ public class TFLiteObjectDetectionAPIModel implements Classifier {
                             "" + i,
                             labels.get((int) outputClasses[0][i] + labelOffset),
                             outputScores[0][i],
-                            detection));
+                        detection));
         }
         Trace.endSection(); // "recognizeImage"
         return recognitions;

@@ -27,7 +27,7 @@ public class Detector implements ImageReader.OnImageAvailableListener {
     /**
      * The minimum confidence you want displayed
      */
-    private static final float MIN_CONFIDENCE = 0.6f;
+    private static final float MIN_CONFIDENCE = 0.9f;
 
     /**
      * The object that controls all of the bounding boxes display

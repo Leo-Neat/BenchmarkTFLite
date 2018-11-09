@@ -569,13 +569,22 @@ public class InferenceTestActivity extends AppCompatActivity {
         String TF_OD_API_MODEL_FILE = "detect.tflite";
         String TF_OD_API_LABELS_FILE = "file:///android_asset/coco_labels_list.txt";
         try {
-            detector =
+
+            Classifier detector2 =
                     TFLiteObjectDetectionAPIModel.create(
                             getAssets(),
                             TF_OD_API_MODEL_FILE,
                             TF_OD_API_LABELS_FILE,
                             TF_OD_API_INPUT_SIZE,
                             TF_OD_API_IS_QUANTIZED);
+
+            detector =
+                    TFLiteObjectDetectionAPIModel.create(
+                            getAssets(),
+                            "ando_optimized_graph.tflite",
+                            "file:///android_asset/ando_labels_list.txt",
+                            300,
+                            false);
         } catch (final IOException e) {
             Toast toast =
                     Toast.makeText(
