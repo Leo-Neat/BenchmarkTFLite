@@ -72,7 +72,7 @@ class BoundingBox {
     {
         mTextPaint = new Paint();
         mTextPaint.setTextSize(TEXT_SIZE);
-        mTextPaint.setColor(Color.RED);
+        mTextPaint.setColor(Color.CYAN);
         mTextPaint.setStyle(Paint.Style.FILL);
         mBoxRect = box;
         mBoxLabel = label;

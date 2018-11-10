@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
@@ -58,6 +59,8 @@ public class InferenceTestActivity extends AppCompatActivity {
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
     private Detector mDetector;
+    private float mMin_Confidence = 0.5f;
+    private int mModelNumber;
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -281,7 +284,27 @@ public class InferenceTestActivity extends AppCompatActivity {
     public void onPause() {
         closeCamera();
         stopBackgroundThread();
+        storeModelData();
         super.onPause();
+    }
+
+    private void storeModelData(){
+        // TODO change to accumulation rather than average
+
+        final SharedPreferences sharedPref = getApplicationContext()
+                .getSharedPreferences("com.leo.neat.benchmark_tf_lite", Context.MODE_PRIVATE);
+        double ips = mDetector.getIPS();
+        String modelToChange = "";
+        if(mModelNumber == 0)
+        {
+            modelToChange = TFLiteModelValues.STANDARD_MODEL_FILENAME;
+        }
+        else if(mModelNumber == 1)
+        {
+            modelToChange = TFLiteModelValues.ANDO_MODEL_FILENAME;
+        }
+        double newIPS = (Double.parseDouble(sharedPref.getString(modelToChange,"0")) + ips)/2;
+        sharedPref.edit().putString(modelToChange,newIPS + "").apply();
     }
 
     /**
@@ -564,27 +587,31 @@ public class InferenceTestActivity extends AppCompatActivity {
     private Classifier createClassifier()
     {
         Classifier detector = null;
-        final int TF_OD_API_INPUT_SIZE = 300;
-        boolean TF_OD_API_IS_QUANTIZED = true;
-        String TF_OD_API_MODEL_FILE = "detect.tflite";
-        String TF_OD_API_LABELS_FILE = "file:///android_asset/coco_labels_list.txt";
+        final SharedPreferences sharedPref = getApplicationContext()
+                .getSharedPreferences("com.leo.neat.benchmark_tf_lite", Context.MODE_PRIVATE);
+        mModelNumber = sharedPref.getInt(TFLiteModelValues.CURRENT_MODEL,0);
         try {
-
-            Classifier detector2 =
-                    TFLiteObjectDetectionAPIModel.create(
-                            getAssets(),
-                            TF_OD_API_MODEL_FILE,
-                            TF_OD_API_LABELS_FILE,
-                            TF_OD_API_INPUT_SIZE,
-                            TF_OD_API_IS_QUANTIZED);
-
-            detector =
-                    TFLiteObjectDetectionAPIModel.create(
-                            getAssets(),
-                            "ando_optimized_graph.tflite",
-                            "file:///android_asset/ando_labels_list.txt",
-                            300,
-                            false);
+            if(mModelNumber == 0) {
+                detector =
+                        TFLiteObjectDetectionAPIModel.create(
+                                getAssets(),
+                                TFLiteModelValues.STANDARD_MODEL_FILENAME,
+                                TFLiteModelValues.STANDARD_MODEL_LABELS,
+                                TFLiteModelValues.STANDARD_MODEL_INPUT_SIZE,
+                                TFLiteModelValues.STANDARD_MODEL_IS_QUANTITIZED);
+                mMin_Confidence = TFLiteModelValues.STANDARD_MODEL_CONFIDENCE;
+            }
+            else if(mModelNumber == 1)
+            {
+                detector =
+                        TFLiteObjectDetectionAPIModel.create(
+                                getAssets(),
+                                TFLiteModelValues.ANDO_MODEL_FILENAME,
+                                TFLiteModelValues.ANDO_MODEL_LABELS,
+                                TFLiteModelValues.ANDO_MODEL_INPUT_SIZE,
+                                TFLiteModelValues.ANDO_MODEL_IS_QUANTITIZED);
+                mMin_Confidence = TFLiteModelValues.ANDO_MODEL_CONFIDENCE;
+            }
         } catch (final IOException e) {
             Toast toast =
                     Toast.makeText(
@@ -602,7 +629,7 @@ public class InferenceTestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inference_test);
         mTextureView = findViewById(R.id.camera_display);
         SurfaceView mSurface = findViewById(R.id.bounding_box_surface);
-        mDetector = new Detector(mSurface, getApplicationContext(), createClassifier());
+        mDetector = new Detector(mSurface, getApplicationContext(), createClassifier(), mMin_Confidence);
     }
 }
 

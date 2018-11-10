@@ -27,7 +27,7 @@ public class Detector implements ImageReader.OnImageAvailableListener {
     /**
      * The minimum confidence you want displayed
      */
-    private static final float MIN_CONFIDENCE = 0.9f;
+    private float min_confidence;
 
     /**
      * The object that controls all of the bounding boxes display
@@ -55,18 +55,22 @@ public class Detector implements ImageReader.OnImageAvailableListener {
      */
     private long startTime;
 
+    private double mIPS;
+
     /**
      *
      * @param drawableSurface - the overlaying surface used for bounding box display
      * @param cxt - the context of the calling application
      * @param imageClassifier - the interface that is going to be used for image detection
      */
-    public Detector(SurfaceView drawableSurface, Context cxt, Classifier imageClassifier){
+    public Detector(SurfaceView drawableSurface, Context cxt, Classifier imageClassifier, float min_conf){
         mBoundingBoxManager = new BoundingBoxManager(drawableSurface);
         isBusy = false;
         mImageClassifier = imageClassifier;
         processedFrames = 0;
         startTime = System.currentTimeMillis();
+        min_confidence = min_conf;
+
     }
 
     @Override
@@ -90,7 +94,7 @@ public class Detector implements ImageReader.OnImageAvailableListener {
                     for(final Classifier.Recognition result: detectionResults)
                     {
                         final RectF location = result.getLocation();
-                        if(location != null && result.getConfidence() >= MIN_CONFIDENCE)
+                        if(location != null && result.getConfidence() >= min_confidence)
                         {
                             mBoundingBoxManager.addBoundingBox(convertRect(location),Color.GREEN, 250,result.getTitle());
                         }
@@ -98,7 +102,8 @@ public class Detector implements ImageReader.OnImageAvailableListener {
                     isBusy = false;
                     processedFrames += 1;
                     float secElapsed = (System.currentTimeMillis() -startTime )/1000;
-                    mBoundingBoxManager.setIPS(processedFrames/secElapsed);
+                    mIPS = processedFrames/secElapsed;
+                    mBoundingBoxManager.setIPS(mIPS);
                 }
             });
             runningDetection.start();
@@ -127,5 +132,10 @@ public class Detector implements ImageReader.OnImageAvailableListener {
         buffer.get(bytes);
         Bitmap bp = BitmapFactory.decodeByteArray(bytes,0,bytes.length,null);
         return bp;
+    }
+
+    public double getIPS()
+    {
+        return mIPS;
     }
 }

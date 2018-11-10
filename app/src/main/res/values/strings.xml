@@ -2,4 +2,11 @@
     <string name="app_name">Benchmark-TF-Lite</string>
     <string name="start_button">Start</string>
     <string name="models_button">Models</string>
+    <string name="model_select_title">Model Select</string>
+    <string name="model_1_name">Name: Pre-Loaded TF-lite</string>
+    <string name="model_1_performance">Performance:</string>
+    <string name="model_1_class">Class: SSD Mobile Net V2</string>
+    <string name="model_2_name">Name: Ando Detector</string>
+    <string name="model_2_performance">Performance:</string>
+    <string name="model_2_class">Class: SSDLite Mobile Net V2</string>
 </resources>

@@ -194,13 +194,11 @@ public class TFLiteObjectDetectionAPIModel implements Classifier {
         Trace.beginSection("run");
         tfLite.runForMultipleInputsOutputs(inputArray, outputMap);
         Trace.endSection();
-        ;
+
         // Show the best detections.
         // after scaling them back to the input size.
         final ArrayList<Recognition> recognitions = new ArrayList<>(NUM_DETECTIONS);
-
         for (int i = 0; i < NUM_DETECTIONS; ++i) {
-            Log.d("OUTPUT Scores", outputScores[0][i] + " ");
             final RectF detection =
                     new RectF(
                             outputLocations[0][i][1] * inputSize,
