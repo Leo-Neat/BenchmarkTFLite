@@ -303,8 +303,15 @@ public class InferenceTestActivity extends AppCompatActivity {
         {
             modelToChange = TFLiteModelValues.ANDO_MODEL_FILENAME;
         }
-        double newIPS = (Double.parseDouble(sharedPref.getString(modelToChange,"0")) + ips)/2;
-        sharedPref.edit().putString(modelToChange,newIPS + "").apply();
+        else if(mModelNumber == 2)
+        {
+            modelToChange = TFLiteModelValues.TEXT_MODEL_FILENAME;
+        }
+        else if(mModelNumber == 3)
+        {
+            modelToChange = TFLiteModelValues.TEXTLITE_MODEL_FILENAME;
+        }
+        sharedPref.edit().putString(modelToChange,ips + "").apply();
     }
 
     /**
@@ -612,6 +619,28 @@ public class InferenceTestActivity extends AppCompatActivity {
                                 TFLiteModelValues.ANDO_MODEL_IS_QUANTITIZED);
                 mMin_Confidence = TFLiteModelValues.ANDO_MODEL_CONFIDENCE;
             }
+            else if(mModelNumber == 2)
+            {
+                detector =
+                        TFLiteObjectDetectionAPIModel.create(
+                                getAssets(),
+                                TFLiteModelValues.TEXT_MODEL_FILENAME,
+                                TFLiteModelValues.TEXT_MODEL_LABELS,
+                                TFLiteModelValues.TEXT_MODEL_INPUT_SIZE,
+                                TFLiteModelValues.TEXT_MODEL_IS_QUANTITIZED);
+                mMin_Confidence = TFLiteModelValues.TEXT_MODEL_CONFIDENCE;
+            }
+            else if(mModelNumber == 3)
+            {
+                detector =
+                        TFLiteObjectDetectionAPIModel.create(
+                                getAssets(),
+                                TFLiteModelValues.TEXTLITE_MODEL_FILENAME,
+                                TFLiteModelValues.TEXTLITE_MODEL_LABELS,
+                                TFLiteModelValues.TEXTLITE_MODEL_INPUT_SIZE,
+                                TFLiteModelValues.TEXTLITE_MODEL_IS_QUANTITIZED);
+                mMin_Confidence = TFLiteModelValues.TEXTLITE_MODEL_CONFIDENCE;
+            }
         } catch (final IOException e) {
             Toast toast =
                     Toast.makeText(
@@ -619,6 +648,7 @@ public class InferenceTestActivity extends AppCompatActivity {
             toast.show();
             finish();
         }
+
         return detector;
 
     }

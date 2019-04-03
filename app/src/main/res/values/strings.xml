@@ -9,4 +9,10 @@
     <string name="model_2_name">Name: Ando Detector</string>
     <string name="model_2_performance">Performance:</string>
     <string name="model_2_class">Class: SSDLite Mobile Net V2</string>
+    <string name="model_3_name">Name: Text Detector</string>
+    <string name="model_3_performance">Performance:</string>
+    <string name="model_3_class">Class: SSD Mobile Net V2</string>
+    <string name="model_4_name">Name: Lite Text Detector</string>
+    <string name="model_4_performance">Performance:</string>
+    <string name="model_4_class">Class: SSDLite Mobile Net V2</string>
 </resources>

@@ -18,4 +18,18 @@ public class TFLiteModelValues {
     public static final int ANDO_MODEL_INPUT_SIZE = 300;
     public static final boolean ANDO_MODEL_IS_QUANTITIZED = false;
     public static final float ANDO_MODEL_CONFIDENCE = 0.85f;
+
+    // Text Detector model Non ssd
+    public static final String TEXT_MODEL_FILENAME = "text_detector.tflite";
+    public static final String TEXT_MODEL_LABELS = "file:///android_asset/text_labels_list.txt";
+    public static final int TEXT_MODEL_INPUT_SIZE = 300;
+    public static final boolean TEXT_MODEL_IS_QUANTITIZED = false;
+    public static final float TEXT_MODEL_CONFIDENCE = 0.60f;
+
+    // Text Detector model LITE
+    public static final String TEXTLITE_MODEL_FILENAME = "text_detectorLite.tflite";
+    public static final String TEXTLITE_MODEL_LABELS = "file:///android_asset/text_labels_list.txt";
+    public static final int TEXTLITE_MODEL_INPUT_SIZE = 300;
+    public static final boolean TEXTLITE_MODEL_IS_QUANTITIZED = false;
+    public static final float TEXTLITE_MODEL_CONFIDENCE = 0.90f;
 }
